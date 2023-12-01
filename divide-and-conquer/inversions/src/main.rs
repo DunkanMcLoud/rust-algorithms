@@ -1,10 +1,7 @@
-use std::{
-    fs::File,
-    io::{self, Read},
-};
+use std::fs::File;
 
 fn main() {
-    println!("{:?}", read_test_data());
+    println!("Hello")
 }
 
 fn sort_and_count_inversions(arr: &[u32]) -> (Vec<u32>, u32) {
@@ -54,19 +51,12 @@ fn merge_and_count_inv(a: &[u32], b: &[u32]) -> (Vec<u32>, u32) {
     (res, split_inv as u32)
 }
 
-fn read_test_data() -> Vec<u32> {
-    let file = File::open("./test.txt").expect("Not found file");
-    let mut reader = io::BufReader::new(file);
-    let mut s = String::new();
-    reader.read_to_string(&mut s).expect("Cannot read");
-    s.lines()
-        .filter_map(|line| line.parse().ok())
-        .collect::<Vec<u32>>()
-}
 
 #[test]
 fn name() {
-    let (arr, count) = sort_and_count_inversions(read_test_data().as_slice());
+    let (arr, count) = sort_and_count_inversions(
+        utils::read_numbers_from_file(File::open("./test.txt").expect("Can not find")).as_slice()
+    );
     println!("{:?}", arr);
     assert_eq!(28, count);
 }

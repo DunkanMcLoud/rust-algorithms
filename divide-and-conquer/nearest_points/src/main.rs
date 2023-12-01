@@ -40,12 +40,11 @@ fn closest_pair(l: Vec<Point>, r: Vec<Point>) -> (Point, Point) {
         return brute_force_find_closest(l.as_slice());
     }
 
-
     let median = l[l.len() / 2];
     let (l_x, r_x) = l.iter().partition(|&p| p.x < median.x);
     let (l_y, r_y) = r.iter().partition(|&p| p.x < median.x);
-    println!("left X {:?}, right X{:?}",l_x,r_x);
-    println!("left Y {:?},right Y{:?}",l_y,r_y);
+    println!("left X {:?}, right X{:?}", l_x, r_x);
+    println!("left Y {:?},right Y{:?}", l_y, r_y);
     let (l1, l2) = closest_pair(l_x, l_y);
     let (r1, r2) = closest_pair(r_x, r_y);
 
@@ -59,17 +58,17 @@ fn closest_pair(l: Vec<Point>, r: Vec<Point>) -> (Point, Point) {
 
     let delta = f64::min(distance(&l1, &l2) as f64, distance(&r1, &r2) as f64) as u32;
 
-
     let strip: Vec<Point> = r
         .iter()
         .cloned()
-        .filter(|&p| (p.x - median.x).abs() < delta as i32).collect();
+        .filter(|&p| (p.x - median.x).abs() < delta as i32)
+        .collect();
 
     let closest_in_split = closest_split_pair(&strip, delta);
 
     match closest_in_split {
         Some(pt) => pt,
-        None => nearest_points
+        None => nearest_points,
     }
 }
 
@@ -81,7 +80,7 @@ fn brute_force_find_closest(points: &[Point]) -> (Point, Point) {
         for n in (i + 1)..points.len() {
             let d = distance(&points[i], &points[n]);
 
-            if d < min_dist  {
+            if d < min_dist {
                 min_dist = d;
                 p1 = points[i];
                 p2 = points[n];
@@ -198,8 +197,8 @@ mod tests {
         let expected_pair2 = Point::from((11, 13));
 
         assert!(
-            (res.0 == expected_pair1 && res.1 == expected_pair2) ||
-                (res.1 == expected_pair1 && res.0 == expected_pair2)
+            (res.0 == expected_pair1 && res.1 == expected_pair2)
+                || (res.1 == expected_pair1 && res.0 == expected_pair2)
         );
     }
 
