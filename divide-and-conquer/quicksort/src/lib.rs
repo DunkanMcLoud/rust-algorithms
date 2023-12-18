@@ -1,9 +1,6 @@
-fn main() {
-    println!("Quicksort implementation");
-}
+use std::fmt::Debug;
 
-
-fn quick_sort(slice: &mut [u32]) {
+pub fn quick_sort<T: Ord + Debug>(slice: &mut [T]) {
     if slice.len() <= 1 {
         return;
     }
@@ -13,8 +10,10 @@ fn quick_sort(slice: &mut [u32]) {
     quick_sort(right);
 }
 
-fn partition<F>(array: &mut [u32], mut select_pivot: F) -> usize where F: FnMut(&mut [u32]) -> usize {
+pub fn partition<F, T: Ord + Debug>(array: &mut [T], mut select_pivot: F) -> usize where F: FnMut(&mut [T]) -> usize {
     let mut pivot = select_pivot(array);
+    array.swap(0, pivot);
+    pivot = 0;
     let mut i = pivot + 1;
     let mut j = i;
 
@@ -27,14 +26,14 @@ fn partition<F>(array: &mut [u32], mut select_pivot: F) -> usize where F: FnMut(
         j += 1
     }
     //restore the invariant
-    println!("swap {:?} with pivot = {:?}", array[i - 1], array[pivot]);
+    //println!("swap {:?} with pivot = {:?}", array[i - 1], array[pivot]);
     array.swap(i - 1, pivot);
-    println!("Partitioned array = {:?}, pivot = {:?}", array, array[i - 1]);
+    //println!("Partitioned array = {:?}, pivot = {:?}", array, array[i - 1]);
     return i - 1;
 }
 
 
-fn select_first_as_pivot(slice: &mut [u32]) -> usize {
+fn select_first_as_pivot<T: Ord + Debug>(slice: &mut [T]) -> usize {
     0
 }
 
