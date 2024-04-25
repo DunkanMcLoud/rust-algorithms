@@ -39,7 +39,7 @@ impl UWGraph {
         for (index, node) in self.nodes.iter().enumerate() {
             let score = match index {
                 0 => DijkstraScore { node_num: 1, score: Some(0) },
-                Some(x) => DijkstraScore { node_num: x + 1, score: None }
+                x => DijkstraScore { node_num: x + 1, score: None }
             };
             heap.insert(score)
         }
@@ -77,10 +77,16 @@ pub struct Edge {
     weight: usize,
 }
 
-#[derive(Eq, Debug)]
-struct DijkstraScore {
-    node_num: usize,
-    score: Option<usize>,
+#[derive(Eq, Debug, Copy, Clone, Default)]
+pub struct DijkstraScore {
+    pub node_num: usize,
+    pub score: Option<usize>,
+}
+
+impl DijkstraScore {
+    pub fn from(node_num: usize, score: usize) -> Self {
+        Self { node_num, score: Some(score) }
+    }
 }
 
 impl Identity for DijkstraScore {
