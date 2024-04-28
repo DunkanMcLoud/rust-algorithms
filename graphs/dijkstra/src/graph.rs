@@ -32,8 +32,8 @@ impl UWGraph {
     }
 
     /// Computes shortest path distance from source node (1)
-    pub fn shortest_path_to(&self, node_id: usize) -> usize {
-        assert!(node_id < self.nodes.len());
+    pub fn shortest_path_to(&self, node_id: usize) -> Option<usize> {
+        assert!(node_id <= self.nodes.len());
         let mut shortest_path_len = 0_usize;
         let mut heap: Heap<DijkstraScore> = Heap::default();
         for (index, node) in self.nodes.iter().enumerate() {
@@ -46,23 +46,23 @@ impl UWGraph {
 
         while !heap.is_empty() {
             let round_winner = heap.extract_min().expect("Heap should not be empty");
-            if (round_winner.node_num == node_id) {
-                return shortest_path_len;
+            if round_winner.node_num == node_id {
+                return round_winner.score;
             }
-            shortest_path_len = round_winner.score.expect("Should give reachable vertices' scores");
+            shortest_path_len = round_winner.score.expect("Should extract reachable vertices");
             // update heap to maintain invariant
-            for adjacent_edge in &self.nodes[round_winner.node_num].edges {
-                let old_score = heap.delete(adjacent_edge.node_num);
+            for adjacent_edge in &self.nodes[round_winner.node_num - 1].edges {
+                let next_node_old_score = heap
+                    .delete_by_id(adjacent_edge.node_num);
                 heap.insert(DijkstraScore {
                     node_num: adjacent_edge.node_num,
                     score: Some(
-                        min(old_score.score.expect("Expect to be a value"),
+                        min(next_node_old_score.map_or(usize::MAX, |s| s.score.unwrap_or(usize::MAX)),
                             shortest_path_len + adjacent_edge.weight)),
-                })
+                });
             }
         }
-        // assert path exists
-        0
+        None
     }
 }
 
